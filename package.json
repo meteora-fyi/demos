@@ -25,6 +25,7 @@
     "@meteora-ag/dynamic-bonding-curve-sdk": "1.5.11",
     "@solana/spl-token": "0.4.14",
     "@solana/web3.js": "1.98.4",
+    "croner": "9.1.0",
     "node-cron": "4.2.1"
   }
 }

@@ -22,3 +22,21 @@ Use Node 22.12 or newer, npm, and a Solana CLI with `solana-test-validator`. Sta
 The curve command computes Meteora DBC parameters offline. For a live launchpad, create your DBC config in [Meteora Launch](https://launch.meteora.ag), set the resulting `POOL_CONFIG_KEY` in [Fun Launch](https://docs.meteora.ag/invent/scaffold/fun-launch), and use its wallet launch/trading interface. The presets collect DBC trading fees in SOL and target DAMM v2 on graduation. The two Token-2022 demos run separately on localnet and collect transfer fees denominated in the transferred token. The presets do not enable a Token-2022 transfer fee extension.
 
 [Workshop brief](https://lead-satellite-892.notion.site/Launchpads-Are-a-Business-Tune-Your-Pricing-Margins-and-Incentives-on-Meteora-40a12946d1328034a2a8fb561fb7bad5?pvs=74)
+
+## Conviction Index in Fun Launch
+
+This branch is a Poise-inspired index business demo. See [Fun Launch setup](fun-launch/README.md#workshop-fork)
+and use **Workshop** in the app header. The original scaffold's DBC pool creation and trading pages
+are separate from the workshop's reserve-backed localnet fund.
+
+1. Launch a basket with 50/30/20 weights. The assets have fixed mock $1 prices and separate SPL mints and reserves.
+2. Subscribe as Alice for 100 shares and as Bob for 50. The fund issues Token-2022 shares against deposits in
+   one transaction per subscription. The platform collects 0.15 SOL of gross subscription revenue.
+3. Transfer 10 shares from Alice to Bob. The mint withholds 0.2 shares. Click **Run rebate now**, or wait for
+   the server cron and click **Refresh confirmed state**. The same transfer fee applies to payouts.
+4. Redeem five whole shares. The fund burns shares and returns the weighted basket in one transaction.
+   NAV stays at $1 because mock prices are fixed and the reserves stay fully backed.
+
+Only two disposable holders can take part. The server holds demo signing keys in memory. Restarting the
+app process creates a new workshop session, with a new mint on the next launch. This prototype uses
+fixed mock prices and has no external custody, live pricing, rebalancing, or production fund program.
