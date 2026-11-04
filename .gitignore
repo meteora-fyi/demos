@@ -2,3 +2,7 @@ node_modules/
 .env*
 *.log
 test-ledger/
+.next/
+*.tsbuildinfo
+next-env.d.ts
+!fun-launch/.env.example
