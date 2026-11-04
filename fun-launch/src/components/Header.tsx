@@ -34,6 +34,9 @@ export const Header = () => {
 
         {/* Navigation and Actions */}
         <div className="flex items-center gap-1.5 md:gap-3">
+          <Link href="/workshop" className="inline-flex min-h-11 items-center rounded-full px-2 text-sm font-semibold text-primary focus-visible:ring-2 focus-visible:ring-primary md:px-4">
+            Workshop
+          </Link>
           <CreatePoolButton />
           {address ? (
             <Button variant="secondary" onClick={() => disconnect()}>
