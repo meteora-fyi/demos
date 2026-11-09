@@ -5,6 +5,9 @@ export type Asset = {
   color: string;
   price: number;
   updatedAt: number;
+  source?: 'jupiter';
+  sourceMint?: string;
+  sourceDecimals?: number;
 };
 export type Config = {
   name: string;
@@ -52,6 +55,15 @@ export type IndexView = {
   createdAt: number | string;
   status: string;
   addresses: Record<string, string>;
+  assetMints?: {
+    assetId: string;
+    symbol: string;
+    name: string;
+    sourceMint?: string;
+    sourceDecimals?: number;
+    mint: string;
+    decimals: number;
+  }[];
   market: {
     price: number;
     volume: number;

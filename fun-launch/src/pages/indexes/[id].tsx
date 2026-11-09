@@ -823,6 +823,57 @@ function Detail() {
                 ))}
             </div>
           </section>
+          {!!index.assetMints?.length && (
+            <section className="address-section">
+              <h3>Basket token identities</h3>
+              <p className="terms-note">
+                Each devnet fixture is a separate six-decimal token. Source
+                mints identify the mainnet reference; they are not assets held
+                by this basket.
+              </p>
+              <div className="fixture-identities">
+                {index.assetMints.map((asset) => (
+                  <article key={asset.assetId}>
+                    <h4>
+                      {asset.symbol} <span>{asset.name}</span>
+                    </h4>
+                    <dl>
+                      <div>
+                        <dt>Mainnet reference</dt>
+                        <dd>
+                          {asset.sourceMint ? (
+                            <a
+                              href={`https://explorer.solana.com/address/${encodeURIComponent(asset.sourceMint)}`}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {asset.sourceMint}
+                              <Icon name="external" size={13} />
+                            </a>
+                          ) : (
+                            'Built-in workshop fixture'
+                          )}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Devnet fixture mint</dt>
+                        <dd>
+                          <a
+                            href={explorer(asset.mint)}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {asset.mint}
+                            <Icon name="external" size={13} />
+                          </a>
+                        </dd>
+                      </div>
+                    </dl>
+                  </article>
+                ))}
+              </div>
+            </section>
+          )}
           <details className="advanced">
             <summary>
               Resolved business configuration <Icon name="chevron" size={16} />

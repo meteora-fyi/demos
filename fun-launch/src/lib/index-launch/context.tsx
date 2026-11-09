@@ -112,7 +112,10 @@ export function IndexProvider({ children }: { children: ReactNode }) {
           );
         setPending(prepared);
         if (!prepared.transaction) {
-          response = await request({ action: 'resume', operationId: prepared.operationId });
+          response = await request({
+            action: 'resume',
+            operationId: prepared.operationId,
+          });
           continue;
         }
         setBusy(prepared.description || 'Review transaction in your wallet');
@@ -139,14 +142,18 @@ export function IndexProvider({ children }: { children: ReactNode }) {
   const run = useCallback(
     async (action: string, fields: Record<string, unknown> = {}) => {
       if (busyRef.current) return;
-      if (!['preview'].includes(action) && !publicKey) {
+      if (!['preview', 'add-asset'].includes(action) && !publicKey) {
         setShowModal(true);
         setError('Connect your wallet to continue.');
         return;
       }
       busyRef.current = true;
       setBusy(
-        action === 'quote' ? 'Getting current quote' : 'Preparing transaction',
+        action === 'quote'
+          ? 'Getting current quote'
+          : action === 'add-asset'
+            ? 'Adding basket asset'
+            : 'Preparing transaction',
       );
       setError('');
       setNotice('');
@@ -160,7 +167,9 @@ export function IndexProvider({ children }: { children: ReactNode }) {
           wallet: publicKey?.toBase58(),
           requestId,
         });
-        const result = ['quote', 'preview', 'scenario'].includes(action)
+        const result = ['quote', 'preview', 'scenario', 'add-asset'].includes(
+          action,
+        )
           ? response
           : await complete(response);
         delete requests.current[key];
@@ -181,7 +190,9 @@ export function IndexProvider({ children }: { children: ReactNode }) {
     busyRef.current = true;
     setError('');
     try {
-      await complete(await request({ action: 'resume', operationId: pending.operationId }));
+      await complete(
+        await request({ action: 'resume', operationId: pending.operationId }),
+      );
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not resume.');
     } finally {

@@ -10,4 +10,4 @@ ENV NEXT_TELEMETRY_DISABLED=1 NEXT_PUBLIC_BASE_PATH=/demo
 RUN pnpm --dir fun-launch build
 ENV NODE_ENV=production PORT=3000
 EXPOSE 3000
-CMD ["sh", "-c", "cd fun-launch && pnpm exec next start --hostname :: --port ${PORT:-3000}"]
+CMD ["node", "scripts/serve.mjs", "start"]

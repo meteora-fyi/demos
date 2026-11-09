@@ -3192,3 +3192,229 @@ input::-webkit-inner-spin-button {
     translate: none;
   }
 }
+
+/* Jupiter search adds source identities; the basket always holds devnet copies. */
+.token-search {
+  margin: 24px 0;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+}
+.token-search .field {
+  margin: 0;
+}
+.token-search-note {
+  margin: 9px 0 0;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.token-search-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  font-size: 12px;
+  color: var(--ink);
+}
+.token-search-status:not(:empty) {
+  margin-top: 12px;
+}
+.token-search-status .text-button {
+  font-size: 12px;
+}
+.token-search-results {
+  display: flex;
+  flex-direction: column;
+  margin-top: 14px;
+  border-top: 1px solid var(--line);
+  max-height: 360px;
+  overflow-y: auto;
+}
+.token-search-result {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 13px 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  background: transparent;
+}
+.token-search-result:last-child {
+  border-bottom: 0;
+}
+.token-search-result:hover:not(:disabled) {
+  color: var(--accent);
+}
+.token-search-result:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+.token-search-identity {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+.token-search-identity > span {
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.token-search-identity strong {
+  margin-right: 5px;
+}
+.token-search-identity code {
+  font-size: 9px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.token-search-action {
+  flex-shrink: 0;
+  font-size: 10px;
+}
+.asset-picker {
+  flex-wrap: wrap;
+}
+.asset-picker > button {
+  min-width: 130px;
+  flex-basis: 28%;
+}
+.asset-picker-label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.asset-picker-label small {
+  display: block;
+  margin-top: 3px;
+  font-size: 9px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.weight-row > label {
+  width: 70px;
+  overflow-wrap: anywhere;
+}
+.weight-row > label small {
+  display: block;
+  margin-top: 3px;
+  font-size: 9px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.remove-asset {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+}
+.asset-coin.asset-monogram {
+  font-family: inherit;
+  font-size: 13px;
+}
+.asset-coin.small.asset-monogram {
+  font-size: 10px;
+}
+.basket-item .asset-coin.asset-monogram {
+  font-size: 22px;
+}
+.basket-many .basket-item .asset-coin {
+  width: 42px;
+  height: 42px;
+  border-width: 3px;
+  font-size: 22px;
+}
+.basket-many .basket-item .asset-coin.asset-monogram {
+  font-size: 13px;
+}
+.basket-many .basket-item {
+  gap: 3px;
+}
+.basket-many .basket-item > span {
+  font-size: 9px;
+  padding: 1px 3px;
+}
+.basket-many.compact .basket-item .asset-coin {
+  width: 27px;
+  height: 27px;
+  border-width: 2px;
+  font-size: 15px;
+}
+.basket-many.compact .basket-item .asset-coin.asset-monogram {
+  font-size: 9px;
+}
+.fixture-identities {
+  display: grid;
+  gap: 16px;
+  margin-top: 18px;
+}
+.fixture-identities article {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 18px;
+}
+.fixture-identities h4 {
+  margin: 0 0 14px;
+  font-size: 13px;
+}
+.fixture-identities h4 span {
+  margin-left: 8px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.fixture-identities dl {
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+.fixture-identities dl > div {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 16px;
+  font-size: 11px;
+}
+.fixture-identities dt {
+  color: var(--muted);
+}
+.fixture-identities dd {
+  margin: 0;
+  min-width: 0;
+}
+.fixture-identities a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  overflow-wrap: anywhere;
+  word-break: break-all;
+}
+.fixture-identities a svg {
+  flex-shrink: 0;
+}
+@media (max-width: 600px) {
+  .token-search {
+    padding: 14px;
+  }
+  .token-search-result {
+    gap: 7px;
+  }
+  .token-search-identity code {
+    font-size: 8px;
+  }
+  .token-search-action {
+    font-size: 9px;
+  }
+  .asset-picker > button {
+    min-width: 100px;
+  }
+  .weight-row > label {
+    width: 55px;
+  }
+  .weight-row {
+    gap: 7px;
+  }
+  .fixture-identities dl > div {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+}

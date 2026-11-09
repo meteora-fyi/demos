@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Shell } from '@/components/index-launch/Shell';
+import { TokenSearch } from '@/components/index-launch/TokenSearch';
 import {
   AllocationBar,
   AssetCoin,
@@ -14,6 +15,7 @@ import {
   DEFAULTS,
   LOCAL_ASSETS,
   type Config,
+  type Asset,
   number,
   price,
 } from '@/lib/index-launch/types';
@@ -62,6 +64,25 @@ export default function Create() {
   }, [step, config, run]);
   const [tradeAmount, setTradeAmount] = useState(1);
   const assets = state?.assets || LOCAL_ASSETS;
+  const addAsset = async (asset: Asset) => {
+    if (
+      config.weights.length >= 10 ||
+      config.weights.some((w) => w.assetId === asset.id)
+    )
+      return;
+    const response = await run('add-asset', { assetId: asset.id });
+    if (response?.assets.some((a) => a.id === asset.id)) {
+      setConfig((current) =>
+        current.weights.some((w) => w.assetId === asset.id) ||
+        current.weights.length >= 10
+          ? current
+          : {
+              ...current,
+              weights: [...current.weights, { assetId: asset.id, weight: 0 }],
+            },
+      );
+    }
+  };
   useEffect(() => {
     if (!loaded && state) {
       let draft = state.defaults || DEFAULTS;
@@ -133,6 +154,9 @@ export default function Create() {
       if (!/^[A-Za-z0-9]{2,10}$/.test(config.symbol))
         return 'Use 2–10 letters or digits for the symbol.';
       if (config.weights.length < 2) return 'Add at least two assets.';
+      if (config.weights.length > 10) return 'Choose up to ten assets.';
+      if (config.weights.some((w) => !assets.some((a) => a.id === w.assetId)))
+        return 'Choose each basket asset again in this workspace.';
       if (weights !== 100 || config.weights.some((w) => w.weight <= 0))
         return 'Positive basket weights must add up to 100%.';
     }
@@ -179,20 +203,23 @@ export default function Create() {
     }
   };
   const preset = (name: string) => {
-    if (name === 'equal')
+    if (!config.weights.length) return;
+    if (name === 'equal') {
+      const weight = Math.floor(100 / config.weights.length);
+      const remainder = 100 % config.weights.length;
       set(
         'weights',
-        assets.map((a) => ({
-          assetId: a.id,
-          weight: a.id === assets[assets.length - 1].id ? 34 : 33,
+        config.weights.map((w, i) => ({
+          assetId: w.assetId,
+          weight: weight + (i < remainder ? 1 : 0),
         })),
       );
-    else
-      set('weights', [
-        { assetId: 'btc', weight: 50 },
-        { assetId: 'eth', weight: 30 },
-        { assetId: 'sol', weight: 20 },
-      ]);
+    } else if (config.weights.length === 3) {
+      set(
+        'weights',
+        config.weights.map((w, i) => ({ ...w, weight: [50, 30, 20][i] })),
+      );
+    }
   };
   return (
     <Shell title="Create an index">
@@ -260,36 +287,59 @@ export default function Create() {
                   placeholder="What does this basket believe in?"
                 />
               </Field>
+              <TokenSearch
+                csrfToken={state?.csrfToken}
+                selected={config.weights.map((w) => w.assetId)}
+                disabled={!!busy}
+                onAdd={addAsset}
+              />
               <div className="asset-picker">
-                {assets.map((asset) => {
-                  const selected = config.weights.some(
-                    (w) => w.assetId === asset.id,
-                  );
-                  return (
-                    <button
-                      key={asset.id}
-                      className={selected ? 'selected' : ''}
-                      aria-pressed={selected}
-                      onClick={() =>
-                        set(
-                          'weights',
-                          selected
-                            ? config.weights.filter(
-                                (w) => w.assetId !== asset.id,
-                              )
-                            : [
-                                ...config.weights,
-                                { assetId: asset.id, weight: 0 },
-                              ],
-                        )
-                      }
-                    >
-                      <AssetCoin asset={asset} />
-                      <span>{asset.symbol}</span>
-                      <Icon name={selected ? 'check' : 'plus'} size={16} />
-                    </button>
-                  );
-                })}
+                {assets
+                  .filter(
+                    (asset) =>
+                      !asset.sourceMint ||
+                      config.weights.some((w) => w.assetId === asset.id),
+                  )
+                  .map((asset) => {
+                    const selected = config.weights.some(
+                      (w) => w.assetId === asset.id,
+                    );
+                    return (
+                      <button
+                        key={asset.id}
+                        className={selected ? 'selected' : ''}
+                        aria-pressed={selected}
+                        disabled={
+                          !!busy || (!selected && config.weights.length >= 10)
+                        }
+                        title={
+                          asset.sourceMint
+                            ? `${asset.name} · Source mint: ${asset.sourceMint}`
+                            : asset.name
+                        }
+                        onClick={() =>
+                          set(
+                            'weights',
+                            selected
+                              ? config.weights.filter(
+                                  (w) => w.assetId !== asset.id,
+                                )
+                              : [
+                                  ...config.weights,
+                                  { assetId: asset.id, weight: 0 },
+                                ],
+                          )
+                        }
+                      >
+                        <AssetCoin asset={asset} />
+                        <span className="asset-picker-label">
+                          {asset.symbol}
+                          {asset.sourceMint && <small>Devnet copy</small>}
+                        </span>
+                        <Icon name={selected ? 'check' : 'plus'} size={16} />
+                      </button>
+                    );
+                  })}
               </div>
               <div className="allocation-heading">
                 <h3>Target allocation</h3>
@@ -299,12 +349,19 @@ export default function Create() {
               </div>
               <div className="weight-list">
                 {config.weights.map((w) => {
-                  const asset = assets.find((a) => a.id === w.assetId)!;
+                  const asset = assets.find((a) => a.id === w.assetId);
+                  if (!asset) return null;
                   return (
                     <div className="weight-row" key={w.assetId}>
                       <AssetCoin asset={asset} small />
                       <label htmlFor={`weight-${w.assetId}`}>
                         {asset.symbol}
+                        {asset.sourceMint && (
+                          <small title={asset.sourceMint}>
+                            {asset.sourceMint.slice(0, 4)}…
+                            {asset.sourceMint.slice(-4)}
+                          </small>
+                        )}
                       </label>
                       <input
                         id={`weight-${w.assetId}`}
@@ -345,6 +402,22 @@ export default function Create() {
                         />
                         %
                       </span>
+                      <button
+                        type="button"
+                        className="icon-button remove-asset"
+                        aria-label={`Remove ${asset.symbol}${asset.sourceMint ? ` ${asset.sourceMint}` : ''}`}
+                        disabled={!!busy}
+                        onClick={() =>
+                          set(
+                            'weights',
+                            config.weights.filter(
+                              (item) => item.assetId !== w.assetId,
+                            ),
+                          )
+                        }
+                      >
+                        <Icon name="close" size={14} />
+                      </button>
                     </div>
                   );
                 })}
@@ -352,6 +425,7 @@ export default function Create() {
               <div className="preset-actions">
                 <button
                   className="text-button"
+                  disabled={config.weights.length !== 3}
                   onClick={() => preset('balanced')}
                 >
                   50 / 30 / 20

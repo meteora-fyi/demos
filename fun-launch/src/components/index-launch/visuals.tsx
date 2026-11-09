@@ -93,11 +93,17 @@ export function AssetCoin({
 }) {
   return (
     <span
-      className={`asset-coin ${small ? 'small' : ''}`}
+      className={`asset-coin ${small ? 'small' : ''} ${asset.sourceMint ? 'asset-monogram' : ''}`}
       style={{ '--asset-color': asset.color } as React.CSSProperties}
       aria-label={asset.symbol}
     >
-      {asset.id === 'btc' ? '₿' : asset.id === 'eth' ? 'Ξ' : '≋'}
+      {asset.id === 'btc'
+        ? '₿'
+        : asset.id === 'eth'
+          ? 'Ξ'
+          : asset.id === 'sol'
+            ? '≋'
+            : asset.symbol.slice(0, 2)}
     </span>
   );
 }
@@ -121,7 +127,7 @@ export function Basket({
   const id = useId().replaceAll(':', '');
   return (
     <div
-      className={`basket-visual ${compact ? 'compact' : ''} ${empty ? 'unfunded' : ''}`}
+      className={`basket-visual ${compact ? 'compact' : ''} ${empty ? 'unfunded' : ''} ${selected.length > 3 ? 'basket-many' : ''}`}
       aria-label={`Basket allocation: ${selected.map((x) => `${x.asset!.symbol} ${x.weight}%`).join(', ')}`}
     >
       <svg
@@ -185,7 +191,16 @@ export function Basket({
           <div
             className={`basket-item item-${i}`}
             key={x.asset!.id}
-            style={{ animationDelay: `${i * 80}ms` }}
+            style={{
+              animationDelay: `${i * 80}ms`,
+              ...(selected.length > 3
+                ? {
+                    left: `${16 + (i % (selected.length > 6 ? 5 : 3)) * (60 / ((selected.length > 6 ? 5 : 3) - 1))}%`,
+                    top: `${18 + Math.floor(i / (selected.length > 6 ? 5 : 3)) * 23}%`,
+                    transform: `rotate(${((i % 3) - 1) * 7}deg)`,
+                  }
+                : {}),
+            }}
           >
             <AssetCoin asset={x.asset!} />
             <span>{x.weight}%</span>
