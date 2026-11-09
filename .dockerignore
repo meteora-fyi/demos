@@ -1,0 +1,9 @@
+.git
+.cursor
+**/node_modules
+**/.next
+**/.env*
+**/*.log
+.demo
+test-ledger
+tests

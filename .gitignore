@@ -6,3 +6,6 @@ test-ledger/
 *.tsbuildinfo
 next-env.d.ts
 !fun-launch/.env.example
+
+.demo/
+.cursor/
