@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="246" viewBox="0 0 1100 246">
+<rect width="1100" height="246" rx="12" fill="#191c20"/>
+<text x="28" y="32" fill="#9da5af" font-family="monospace" font-size="15">Install dependencies · captured command output</text>
+<text x="28" y="76" fill="#e3e7ed" font-family="monospace" font-size="17" xml:space="preserve">$ pnpm --dir fun-launch install --frozen-lockfile</text>
+<text x="28" y="102" fill="#e3e7ed" font-family="monospace" font-size="17" xml:space="preserve"></text>
+<text x="28" y="128" fill="#91cba6" font-family="monospace" font-size="17" xml:space="preserve">Lockfile is up to date, resolution step is skipped</text>
+<text x="28" y="154" fill="#91cba6" font-family="monospace" font-size="17" xml:space="preserve">Already up to date</text>
+<text x="28" y="180" fill="#e3e7ed" font-family="monospace" font-size="17" xml:space="preserve"></text>
+<text x="28" y="206" fill="#91cba6" font-family="monospace" font-size="17" xml:space="preserve">Done in 357ms using pnpm v10.18.2</text>
+</svg>

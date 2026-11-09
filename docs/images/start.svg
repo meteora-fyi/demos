@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="298" viewBox="0 0 1100 298">
+<rect width="1100" height="298" rx="12" fill="#191c20"/>
+<text x="28" y="32" fill="#9da5af" font-family="monospace" font-size="15">Start development · captured command output</text>
+<text x="28" y="76" fill="#e3e7ed" font-family="monospace" font-size="17" xml:space="preserve">$ PORT=3107 npm run dev</text>
+<text x="28" y="102" fill="#e3e7ed" font-family="monospace" font-size="17" xml:space="preserve"></text>
+<text x="28" y="128" fill="#e3e7ed" font-family="monospace" font-size="17" xml:space="preserve">   ▲ Next.js 15.5.29 (Turbopack)</text>
+<text x="28" y="154" fill="#e3e7ed" font-family="monospace" font-size="17" xml:space="preserve">   - Local:        http://[::1]:3107</text>
+<text x="28" y="180" fill="#e3e7ed" font-family="monospace" font-size="17" xml:space="preserve">   - Network:      http://[::]:3107</text>
+<text x="28" y="206" fill="#e3e7ed" font-family="monospace" font-size="17" xml:space="preserve"></text>
+<text x="28" y="232" fill="#e3e7ed" font-family="monospace" font-size="17" xml:space="preserve"> ✓ Starting...</text>
+<text x="28" y="258" fill="#91cba6" font-family="monospace" font-size="17" xml:space="preserve"> ✓ Ready in 1180ms</text>
+</svg>

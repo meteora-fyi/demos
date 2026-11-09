@@ -51,6 +51,10 @@ npm ci
 pnpm --dir fun-launch install --frozen-lockfile
 ```
 
+![Successful dependency check](docs/images/install.svg)
+
+This capture is from an existing checkout: a fresh install also lists downloaded packages. The final `Done` line confirms completion.
+
 ### 3. Configure local services
 
 ```sh
@@ -72,6 +76,10 @@ npm run dev
 ```
 
 Open **http://localhost:3000**. This command starts Next.js and the token-search worker together. Search reads cached results and queues fresh queries; the worker paces Jupiter requests and backs off when rate limited.
+
+![Development server ready](docs/images/start.svg)
+
+The capture uses port `3107` because another local server was running. Without `PORT`, the app defaults to `3000`. Both terminal images render actual command output.
 
 ### 5. Connect and create
 
