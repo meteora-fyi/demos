@@ -1,4 +1,5 @@
-import { useId } from 'react';
+import { useId, useState } from 'react';
+import { safeLogoURI } from '../../../../lib/token-logo.mjs';
 import {
   type Asset,
   type Config,
@@ -91,19 +92,37 @@ export function AssetCoin({
   asset: Asset;
   small?: boolean;
 }) {
+  const [failedLogo, setFailedLogo] = useState<string | undefined>();
+  const logoURI = safeLogoURI(asset.logoURI);
+  const showLogo = logoURI && failedLogo !== logoURI;
   return (
     <span
       className={`asset-coin ${small ? 'small' : ''} ${asset.sourceMint ? 'asset-monogram' : ''}`}
       style={{ '--asset-color': asset.color } as React.CSSProperties}
       aria-label={asset.symbol}
+      role="img"
     >
-      {asset.id === 'btc'
-        ? '₿'
-        : asset.id === 'eth'
-          ? 'Ξ'
-          : asset.id === 'sol'
-            ? '≋'
-            : asset.symbol.slice(0, 2)}
+      {showLogo ? (
+        // External token artwork loads in the browser, without an image proxy or referrer.
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={logoURI}
+          alt=""
+          width={64}
+          height={64}
+          decoding="async"
+          referrerPolicy="no-referrer"
+          onError={() => setFailedLogo(logoURI)}
+        />
+      ) : asset.id === 'btc' ? (
+        '₿'
+      ) : asset.id === 'eth' ? (
+        'Ξ'
+      ) : asset.id === 'sol' ? (
+        '≋'
+      ) : (
+        asset.symbol.slice(0, 2)
+      )}
     </span>
   );
 }

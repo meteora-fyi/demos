@@ -13,7 +13,7 @@ const {dispatch,getState,setChainForTests,setCatalogForTests}=await import('../l
 const {readSession,writeSession}=await import('../lib/store.mjs');
 const owner=Keypair.generate().publicKey.toBase58();
 const sources=Array.from({length:11},()=>Keypair.generate().publicKey.toBase58());
-const entries=sources.map(sourceMint=>({id:`jup_${sourceMint}`,sourceMint,sourceDecimals:9,symbol:'SAME',name:'A Jupiter token',source:'jupiter',color:'#123abc',price:1000}));
+const entries=sources.map(sourceMint=>({id:`jup_${sourceMint}`,sourceMint,sourceDecimals:9,symbol:'SAME',name:'A Jupiter token',source:'jupiter',color:'#123abc',price:1000,logoURI:'https://cdn.example.com/token.png'}));
 const metadata=new Map(entries.map(asset=>[asset.id,asset]));
 setCatalogForTests(async id=>metadata.get(id));
 let captured;
@@ -36,15 +36,36 @@ test('basket supports ten identities even with colliding display symbols, reject
 
 test('adding a Jupiter asset trusts catalog identity, not client metadata or prices',async()=>{
  const session='custom_assets_session_1';
- const state=await dispatch({action:'add-asset',assetId:entries[0].id,sourceMint:sources[1],price:10,name:'Spoof'},session);
+ const state=await dispatch({action:'add-asset',assetId:entries[0].id,sourceMint:sources[1],price:10,name:'Spoof',logoURI:'https://evil.example.com/spoof.png'},session);
  const asset=state.assets.find(a=>a.id===entries[0].id);
  assert.equal(asset.sourceMint,sources[0]);assert.equal(asset.name,'A Jupiter token');assert.equal(asset.price,0.01);
  assert.equal(asset.sourceDecimals,9);
+ assert.equal(asset.logoURI,entries[0].logoURI);
  const again=await dispatch({action:'add-asset',assetId:entries[0].id},session);
  assert.equal(again.assets.length,4);
  assert.equal((await getState(session)).assets.length,4);
  const second=await dispatch({action:'add-asset',assetId:entries[1].id},session);
  assert.equal(second.assets.filter(a=>a.symbol==='SAME').length,2);
+});
+
+test('existing session gets cached logos without changing identity, prices or launch snapshots',async()=>{
+ const session='custom_logo_upgrade_session';
+ await dispatch({action:'add-asset',assetId:entries[0].id},session);
+ const saved=await readSession(session);
+ delete saved.assets[entries[0].id].logoURI;
+ delete saved.assets.btc.logoURI;
+ saved.assets[entries[0].id].price=0.017;
+ await writeSession(session,saved);
+ const state=await getState(session);
+ const asset=state.assets.find(a=>a.id===entries[0].id);
+ assert.equal(asset.logoURI,entries[0].logoURI);
+ assert.equal(asset.price,0.017);
+ assert.equal(asset.sourceMint,sources[0]);
+ assert.ok(state.assets.find(a=>a.id==='btc').logoURI);
+ assert.equal(state.assets.find(a=>a.id==='btc').sourceMint,undefined);
+ metadata.set(entries[0].id,{...entries[0],logoURI:'javascript:bad'});
+ assert.equal((await getState(session)).assets.find(a=>a.id===entries[0].id).logoURI,entries[0].logoURI);
+ metadata.set(entries[0].id,entries[0]);
 });
 
 test('unknown ids, path keys and invalid catalog source identity fail closed',async()=>{
@@ -68,6 +89,7 @@ test('launch snapshots source metadata and config preview accepts only registere
  assert.equal(captured.assets[entries[0].id].price,0.01);
  const persisted=await readSession(session);
  assert.equal(persisted.indexes[0].assetMetadata[entries[1].id].sourceMint,sources[1]);
+ assert.equal(persisted.indexes[0].assetMetadata[entries[1].id].logoURI,entries[1].logoURI);
  assert.equal(persisted.indexes[0].config.assetMetadata,undefined);
 });
 

@@ -1,3 +1,5 @@
+import { STARTER_TOKEN_LOGOS } from '../../../../lib/token-logo.mjs';
+
 export type Asset = {
   id: string;
   symbol: string;
@@ -8,6 +10,7 @@ export type Asset = {
   source?: 'jupiter';
   sourceMint?: string;
   sourceDecimals?: number;
+  logoURI?: string;
 };
 export type Config = {
   name: string;
@@ -147,6 +150,7 @@ export type State = {
 export const LOCAL_ASSETS: Asset[] = [
   {
     id: 'btc',
+    logoURI: STARTER_TOKEN_LOGOS.btc.logoURI,
     symbol: 'BTC',
     name: 'Bitcoin basket asset',
     color: '#d2a14d',
@@ -155,6 +159,7 @@ export const LOCAL_ASSETS: Asset[] = [
   },
   {
     id: 'eth',
+    logoURI: STARTER_TOKEN_LOGOS.eth.logoURI,
     symbol: 'ETH',
     name: 'Ethereum basket asset',
     color: '#8c98bc',
@@ -163,6 +168,7 @@ export const LOCAL_ASSETS: Asset[] = [
   },
   {
     id: 'sol',
+    logoURI: STARTER_TOKEN_LOGOS.sol.logoURI,
     symbol: 'SOL',
     name: 'Solana basket asset',
     color: '#80a895',

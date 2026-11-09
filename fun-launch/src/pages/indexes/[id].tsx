@@ -835,6 +835,14 @@ function Detail() {
                 {index.assetMints.map((asset) => (
                   <article key={asset.assetId}>
                     <h4>
+                      {assets.find((item) => item.id === asset.assetId) && (
+                        <AssetCoin
+                          asset={assets.find(
+                            (item) => item.id === asset.assetId,
+                          )!}
+                          small
+                        />
+                      )}
                       {asset.symbol} <span>{asset.name}</span>
                     </h4>
                     <dl>
