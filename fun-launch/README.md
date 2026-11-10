@@ -1,5 +1,5 @@
-# Index Launch web app
+# Meteora Launchpad Lab web app
 
-This directory contains the Next.js application derived from Meteora Fun Launch. See the repository root README for the product flow, devnet setup, limitations and deployment instructions.
+This Next.js app powers the devnet index launchpad. Use the [scaffold guide](../README.md) for setup, screenshots, and the walkthrough.
 
-Run `pnpm dev` here for local development. The server imports the shared business and chain modules from the repository’s `lib` directory, so install both root and app dependencies.
+From the repository root, run `npm run setup -- --install`, then `npm run dev`. The root command starts the web app, the Jupiter search worker, and the transfer-fee scheduler.

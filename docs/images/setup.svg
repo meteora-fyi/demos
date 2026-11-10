@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="282" viewBox="0 0 1100 282">
+<rect width="1100" height="282" rx="12" fill="#191c20"/>
+<text x="24" y="28" fill="#9da5af" font-family="monospace" font-size="15">Launchpad setup · captured command output</text>
+<text x="24" y="56" fill="#e3e7ed" font-family="monospace" font-size="16">$ npm run setup -- --yes --name &quot;Orbit Indexes&quot; --model holder-rewards --port 3108</text>
+<text x="24" y="80" fill="#e3e7ed" font-family="monospace" font-size="16"></text>
+<text x="24" y="104" fill="#e3e7ed" font-family="monospace" font-size="16">Saved Orbit Indexes on devnet.</text>
+<text x="24" y="128" fill="#e3e7ed" font-family="monospace" font-size="16">Business model: holder-rewards</text>
+<text x="24" y="152" fill="#e3e7ed" font-family="monospace" font-size="16">Config: launchpad.config.json</text>
+<text x="24" y="176" fill="#e3e7ed" font-family="monospace" font-size="16"></text>
+<text x="24" y="200" fill="#e3e7ed" font-family="monospace" font-size="16">Next: install dependencies (README), then npm run dev</text>
+<text x="24" y="224" fill="#e3e7ed" font-family="monospace" font-size="16">Open http://localhost:3108</text>
+<text x="24" y="248" fill="#e3e7ed" font-family="monospace" font-size="16">Connect a devnet wallet and launch your first index.</text>
+</svg>

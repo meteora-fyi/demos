@@ -74,7 +74,9 @@ Setup writes **`launchpad.config.json`** at the repository root. It contains pub
 
 ![Successful dependency check](docs/images/install.svg)
 
-This earlier capture shows the underlying dependency installation. The wizard runs the same locked installs; a fresh checkout also lists downloaded packages.
+This capture shows the locked dependency install on an existing checkout. A fresh checkout also lists downloaded packages.
+
+![Setup wizard output for Orbit Indexes](docs/images/setup.svg)
 
 ### 3. Configure local services
 
@@ -100,7 +102,7 @@ Open the localhost URL printed by setup, normally **http://localhost:3000**. Thi
 
 ![Development server ready](docs/images/start.svg)
 
-The capture uses port `3107` because another local server was running. The wizard's chosen port is used unless the `PORT` environment variable overrides it. Both terminal images render actual command output.
+The capture uses port `3107` because another local server was running. The wizard's chosen port is used unless the `PORT` environment variable overrides it. The terminal images render actual command output.
 
 ### 5. Connect and create
 
@@ -187,15 +189,17 @@ After launch, the index page groups the workflow into **Overview, Treasury, Earn
 | **Collect trading fees** | Confirmed creator and platform fees go to separate accounts. | Collected revenue and the creator’s allocated budgets. |
 | **Fund basket** | The creator signs transfers that exchange wrapped devnet SOL for fixture constituents. | Actual holdings, target weights and remaining basket budget. |
 | **Rebalance holdings** | Scenario-price changes create drift; prepared trades adjust the basket. Large baskets settle in several signed batches. | Before/after weights and each confirmed receipt. |
-| **Pay eligible holders** | The creator signs a payout to eligible wallets registered in this browser session. | Eligibility, interval and confirmed wrapped devnet SOL payments. |
+| **Pay eligible holders** | The creator signs a payout to eligible wallets registered through this demo. | Eligibility, interval and confirmed wrapped devnet SOL payments. |
 | **Buy back → burn** | The treasury buys index tokens; a separate transaction burns acquired tokens. | Amount spent, tokens bought and tokens actually burned. |
 | **Graduate** | Once the curve completes, a signed migration creates the DAMM v2 pool. | Migrated pool and configured fee and liquidity terms. |
 
-For a rebate demonstration, trade with a second wallet **in the same browser session**, wait for an eligible interval, then reconnect the creator to sign the payout. The creator is excluded from rebates. Newly observed holders become eligible only after the required interval.
+For a rebate demonstration, trade with a second wallet through **Explore**, wait for an eligible interval, then use the creator’s workspace to sign the payout. The creator is excluded from rebates. Newly observed holders become eligible only after the required interval.
 
 ## Automate transfer-fee rewards or burns
 
 Choose a transfer-fee model in setup or in **The business** step before launch. This creates a Token-2022 index token. Its transfer fee is independent of the DBC/DAMM trading fee.
+
+![Choose holder rewards or direct fee-token burn](docs/images/automation.jpg)
 
 | Model | What the worker does | What the holder receives |
 | --- | --- | --- |
