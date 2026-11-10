@@ -3,26 +3,27 @@
   "version": "1.0.0",
   "description": "DBC-native index launchpad scaffold for Solana devnet",
   "scripts": {
-    "dev": "pnpm --dir fun-launch dev",
-    "build": "pnpm --dir fun-launch build",
-    "start": "pnpm --dir fun-launch start",
-    "typecheck": "pnpm --dir fun-launch typecheck",
-    "lint": "pnpm --dir fun-launch lint",
-    "test": "node --test tests/*.test.mjs lib/chain.test.mjs",
+    "setup": "node scripts/setup.mjs",
+    "dev": "node scripts/serve.mjs dev",
+    "build": "npm --prefix fun-launch run build",
+    "start": "node scripts/serve.mjs start",
+    "typecheck": "npm --prefix fun-launch run typecheck",
+    "lint": "npm --prefix fun-launch run lint",
+    "test": "node --test tests/*.test.mjs lib/*.test.mjs",
     "check:devnet": "node scripts/check-devnet.mjs"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/meteora-fyi/launchpad-business-demos.git"
+    "url": "git+https://github.com/meteora-fyi/demos.git"
   },
   "keywords": [],
   "author": "",
   "license": "UNLICENSED",
   "type": "module",
   "bugs": {
-    "url": "https://github.com/meteora-fyi/launchpad-business-demos/issues"
+    "url": "https://github.com/meteora-fyi/demos/issues"
   },
-  "homepage": "https://github.com/meteora-fyi/launchpad-business-demos#readme",
+  "homepage": "https://github.com/meteora-fyi/demos#readme",
   "private": true,
   "engines": {
     "node": ">=22.12.0"

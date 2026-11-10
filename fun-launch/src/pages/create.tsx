@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Shell } from '@/components/index-launch/Shell';
+import { TransferFeeSetup } from '@/components/index-launch/TransferFees';
 import { TokenSearch } from '@/components/index-launch/TokenSearch';
 import {
   AllocationBar,
@@ -93,7 +94,7 @@ export default function Create() {
           sessionStorage.removeItem('index-launch-draft');
         }
       } catch {}
-      setConfig(structuredClone(draft));
+      setConfig(structuredClone({...DEFAULTS,...draft}));
       setLoaded(true);
     }
   }, [state, loaded]);
@@ -228,8 +229,8 @@ export default function Create() {
           <Icon name="back" size={16} />
           Explore
         </Link>
-        <h1>Build your index.</h1>
-        <p>A basket is an idea. The terms make it a business.</p>
+        <h1>Create an index</h1>
+        <p>Design the basket, market and revenue model before you launch.</p>
       </div>
       <div className="wizard-steps" aria-label="Creation steps">
         {['The basket', 'The market', 'The business', 'Review & launch'].map(
@@ -238,6 +239,7 @@ export default function Create() {
               type="button"
               key={label}
               className={i === step ? 'active' : i < step ? 'complete' : ''}
+              aria-current={i === step ? 'step' : undefined}
               disabled={i > step}
               onClick={() => {
                 setIssue('');
@@ -657,6 +659,7 @@ export default function Create() {
                   {allocations}% / 100%
                 </strong>
               </div>
+              <TransferFeeSetup config={config} onChange={setConfig} />
               <details className="advanced">
                 <summary>
                   Operating limits <Icon name="chevron" size={16} />
@@ -848,6 +851,7 @@ export default function Create() {
           </div>
         </div>
         <aside className="creation-preview">
+          <div className="preview-panel-label"><span className="live-dot" />Live configuration preview</div>
           {step < 2 ? (
             <>
               <Basket assets={assets} weights={config.weights} empty />

@@ -13,6 +13,10 @@ export type Asset = {
   logoURI?: string;
 };
 export type Config = {
+  transferFeeBps: number;
+  transferFeeMode: 'off' | 'rewards' | 'burn';
+  transferFeeInterval: number;
+  transferFeeMinAmount: number;
   name: string;
   symbol: string;
   description: string;
@@ -52,6 +56,8 @@ export type Receipt = {
   createdAt: number | string;
 };
 export type IndexView = {
+  canManage?: boolean;
+  transferFees?: { enabled: boolean; mode: string; authority: string; fundingBalance: number; collectedRaw: string; distributedRaw: string; burnedRaw: string; nextRunAt?: number | null; lastError?: string | null; receipts?: {signature:string;action:string;createdAt?:number}[] };
   id: string;
   config: Config;
   owner: string;
@@ -122,6 +128,8 @@ export type Quote = {
   [key: string]: unknown;
 };
 export type State = {
+  launchpad?: { name: string; tagline: string; businessModel: string; network: string };
+  exploreIndexes?: IndexView[];
   sessionId: string;
   mode: string;
   quoteSymbol: string;
@@ -177,6 +185,7 @@ export const LOCAL_ASSETS: Asset[] = [
   },
 ];
 export const DEFAULTS: Config = {
+  transferFeeBps: 0, transferFeeMode: 'off', transferFeeInterval: 300, transferFeeMinAmount: 0.001,
   name: 'Conviction Index',
   symbol: 'CVX',
   description: 'A long-term view on crypto. One basket, three assets.',

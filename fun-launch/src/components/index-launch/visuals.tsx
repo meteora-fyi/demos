@@ -23,10 +23,35 @@ export function Icon({
     | 'basket'
     | 'settings'
     | 'chevron'
-    | 'copy';
+    | 'copy'
+    | 'grid'
+    | 'book'
+    | 'menu'
+    | 'info';
   size?: number;
 }) {
   const paths = {
+    grid: (
+      <>
+        <rect x="3" y="3" width="7" height="7" rx="1.5" />
+        <rect x="14" y="3" width="7" height="7" rx="1.5" />
+        <rect x="3" y="14" width="7" height="7" rx="1.5" />
+        <rect x="14" y="14" width="7" height="7" rx="1.5" />
+      </>
+    ),
+    book: (
+      <>
+        <path d="M12 5C8 2 4 3 2 4v16c3-1 7-1 10 1 3-2 7-2 10-1V4c-2-1-6-2-10 1Z" />
+        <path d="M12 5v16" />
+      </>
+    ),
+    menu: <path d="M4 6h16M4 12h16M4 18h16" />,
+    info: (
+      <>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 11v6M12 7v1" />
+      </>
+    ),
     plus: <path d="M12 5v14M5 12h14" />,
     arrow: <path d="M4 12h15m-6-6 6 6-6 6" />,
     back: <path d="M20 12H5m6-6-6 6 6 6" />,
@@ -162,19 +187,25 @@ export function Basket({
             height="19"
             patternUnits="userSpaceOnUse"
           >
-            <path d="M19 0H0v19" stroke="#a9a08e" strokeWidth=".6" />
+            <path d="M19 0H0v19" stroke="var(--basket-grid)" strokeWidth=".6" />
           </pattern>
         </defs>
-        <ellipse cx="230" cy="278" rx="157" ry="13" fill="#e8e2d5" />
+        <ellipse
+          cx="230"
+          cy="278"
+          rx="157"
+          ry="13"
+          fill="var(--basket-shadow)"
+        />
         <path
           d="m75 140 154-57 155 57-28 113-127 36-126-36-28-113Z"
-          fill="#f6f2e9"
-          stroke="#817966"
+          fill="var(--basket-fill)"
+          stroke="var(--basket-edge)"
           strokeWidth="1.3"
         />
         <path
           d="m75 140 154 50 155-50M229 190v99"
-          stroke="#817966"
+          stroke="var(--basket-edge)"
           strokeWidth="1.3"
         />
         <path
@@ -183,24 +214,24 @@ export function Basket({
         />
         <path
           d="m111 126 28-55 54-19m72 0 54 19 28 55"
-          stroke="#817966"
+          stroke="var(--basket-edge)"
           strokeWidth="5"
           strokeLinecap="round"
         />
         <path
           d="m111 126 28-55 54-19m72 0 54 19 28 55"
-          stroke="#f6f2e9"
+          stroke="var(--basket-fill)"
           strokeWidth="2"
         />
         <path
           d="m75 140 154 50 155-50"
-          stroke="#817966"
+          stroke="var(--basket-edge)"
           strokeWidth="5"
           strokeLinecap="round"
         />
         <path
           d="m75 140 154 50 155-50"
-          stroke="#e4dccc"
+          stroke="var(--basket-highlight)"
           strokeWidth="2"
           strokeLinecap="round"
         />
@@ -296,10 +327,10 @@ export function HistoryChart({
         <svg viewBox="0 0 840 245" aria-hidden="true">
           <path
             d="M20 60H820M20 120H820M20 180H820"
-            stroke="#e7e2d8"
+            stroke="var(--line)"
             strokeDasharray="3 6"
           />
-          <path d="M20 205H820" stroke="#d5cebf" />
+          <path d="M20 205H820" stroke="var(--line-strong)" />
         </svg>
         <div>
           <strong>
@@ -339,23 +370,23 @@ export function HistoryChart({
             y1={h * v}
             x2={w - pad}
             y2={h * v}
-            stroke="#e7e2d8"
+            stroke="var(--line)"
             strokeDasharray="3 6"
           />
         ))}
         <path
           d={`${path} L ${w - pad} ${h - pad} L ${pad} ${h - pad} Z`}
-          fill="#dce8df"
+          fill="var(--chart-fill)"
           opacity=".48"
         />
         <path
           d={path}
           fill="none"
-          stroke="#47775e"
+          stroke="var(--accent)"
           strokeWidth="2.6"
           strokeLinejoin="round"
         />
-        <circle cx={end[0]} cy={end[1]} r="4" fill="#47775e" />
+        <circle cx={end[0]} cy={end[1]} r="4" fill="var(--accent)" />
       </svg>
       <div className="chart-axis">
         <span>

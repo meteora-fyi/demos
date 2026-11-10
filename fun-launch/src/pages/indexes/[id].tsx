@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { TransferFeePanel } from '@/components/index-launch/TransferFees';
 import { Shell } from '@/components/index-launch/Shell';
+import { SectionTabs, ProgressBar } from '@/components/index-launch/ui';
 import {
   AllocationBar,
   AssetCoin,
@@ -25,6 +27,11 @@ function Detail() {
   const router = useRouter();
   const { state, loading, busy, run, wallet, connect, refresh } = useIndex();
   const index = state?.indexes.find((i) => i.id === router.query.id);
+  const requestedIndex = useRef('');
+  useEffect(()=>{
+    const id=typeof router.query.id==='string'?router.query.id:'';
+    if(id && state && !index && requestedIndex.current!==id){requestedIndex.current=id;void run('open-index',{indexId:id});}
+  },[router.query.id,state,index,run]);
   const [tab, setTab] = useState('Overview');
   const [chart, setChart] = useState<'price' | 'treasuryValue'>('price');
   const [side, setSide] = useState<'buy' | 'sell'>('buy');
@@ -49,7 +56,7 @@ function Detail() {
             <>
               <h2>This index is not in your workspace.</h2>
               <p>
-                Return to Explore to open an index from this browser session.
+                Return to Explore to browse launches created through this demo.
               </p>
               <Link href="/" className="button">
                 Explore indexes
@@ -60,7 +67,7 @@ function Detail() {
       </Shell>
     );
   const assets = state?.assets || LOCAL_ASSETS;
-  const owner = wallet === index.owner;
+  const owner = wallet === index.owner && index.canManage !== false;
   const market = index.market;
   const earnings = index.earnings;
   const marketStatus = /damm|graduated|migrated/i.test(index.status)
@@ -137,23 +144,7 @@ function Detail() {
           </div>
         </div>
       </section>
-      <nav className="detail-tabs" aria-label="Index sections">
-        {[
-          'Overview',
-          'Treasury',
-          'Earnings',
-          'Operations',
-          'Configuration',
-        ].map((t) => (
-          <button
-            key={t}
-            className={tab === t ? 'active' : ''}
-            onClick={() => setTab(t)}
-          >
-            {t}
-          </button>
-        ))}
-      </nav>
+      <SectionTabs value={tab} onValueChange={setTab} items={['Overview', 'Treasury', 'Earnings', 'Operations', 'Configuration']}>
       {tab === 'Overview' && (
         <div className="detail-grid">
           <div>
@@ -299,7 +290,7 @@ function Detail() {
                   {quote.fee !== undefined && (
                     <div>
                       <span>Trading fee</span>
-                      <strong>{price(Number(quote.fee))} SOL</strong>
+                      <strong>{price(Number(quote.fee))} {String(quote.feeSymbol || 'SOL')}</strong>
                     </div>
                   )}
                   {quote.priceImpact !== undefined && (
@@ -342,13 +333,7 @@ function Detail() {
                 <h3>Launch progress</h3>
                 <strong>{number(market.progress, 1)}%</strong>
               </div>
-              <div className="progress-track">
-                <span
-                  style={{
-                    width: `${Math.min(100, Math.max(0, market.progress || 0))}%`,
-                  }}
-                />
-              </div>
+              <ProgressBar value={market.progress || 0} label="Launch graduation progress" />
               <p>
                 {number(market.quoteReserve)} / {number(market.threshold)} SOL
                 in the curve
@@ -617,6 +602,7 @@ function Detail() {
       )}
       {tab === 'Operations' && (
         <>
+          <TransferFeePanel index={index} owner={owner} busy={!!busy} run={run} />
           <div className="section-heading">
             <div>
               <h2>Run the business</h2>
@@ -894,6 +880,7 @@ function Detail() {
         </>
       )}
       {tab === 'Overview' && <Receipts index={index} compact />}
+      </SectionTabs>
     </Shell>
   );
 }

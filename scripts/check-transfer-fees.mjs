@@ -1,0 +1,11 @@
+import {readFile} from 'node:fs/promises';import {Keypair,Transaction} from '@solana/web3.js';
+import {DEFAULT_CONFIG} from '../lib/model.mjs';import {prepare,submit,runTransferFeeTick,transferFeeStatus,snapshot} from '../lib/chain.mjs';
+const wallet=Keypair.fromSecretKey(Uint8Array.from(JSON.parse(await readFile('.demo/integration-devnet-key.json','utf8'))));
+const id='devnet_transferfees_'+wallet.publicKey.toBase58().slice(0,12),config={...DEFAULT_CONFIG,name:'Transfer Fee Burn Proof',symbol:'TFEE',weights:[{assetId:'btc',weight:100}],seedAmount:0,transferFeeMode:'burn',transferFeeBps:250,transferFeeInterval:30,transferFeeMinAmount:0.001};
+async function execute(action,args={}){const requestId=`transfer_fee_proof_${action}`;let saved;try{saved=JSON.parse(await readFile(`${process.env.DEMO_DATA_DIR||'.demo'}/chain/${id}.json`,'utf8'));}catch(e){if(e.code!=='ENOENT')throw e;}
+ if(saved?.operations[requestId]?.complete){console.log({action,resumed:true,signature:saved.operations[requestId].result.signature});return saved.operations[requestId].result;}
+ args=saved?.operations[requestId]?.args||args;let pending=await prepare(action,{index:id,config,wallet:wallet.publicKey.toBase58(),requestId,...args});
+ while(!pending.complete){console.log({action,step:pending.step,description:pending.description});const tx=Transaction.from(Buffer.from(pending.transaction,'base64'));tx.partialSign(wallet);const result=await submit({operation:{index:id,requestId},signedTransaction:tx.serialize().toString('base64')});console.log({action,signature:result.signature,complete:result.complete,effects:result.effects});if(result.complete)return result;pending=await prepare(action,{index:id,config,wallet:wallet.publicKey.toBase58(),requestId,...args});}return pending;}
+await execute('create');await execute('trade',{side:'buy',amount:'0.02',slippageBps:100});
+for(let i=0;i<8;i++){const status=await transferFeeStatus(id);console.log({iteration:i,status});if(BigInt(status.burnedRaw)>0n){console.log({verifiedBurn:true,index:id,state:await snapshot(id)});process.exit(0);}console.log(await runTransferFeeTick());}
+throw new Error('No confirmed transfer-fee burn yet; inspect durable worker status before retrying.');

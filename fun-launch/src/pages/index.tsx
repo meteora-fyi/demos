@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { Shell } from '@/components/index-launch/Shell';
 import {
   AssetCoin,
@@ -17,20 +18,36 @@ import {
 export default function Home() {
   const { state, loading, refresh } = useIndex();
   const assets = state?.assets || LOCAL_ASSETS;
-  const indexes = state?.indexes || [];
+  const router = useRouter();
+  const mine = router.query.view === 'mine';
+  const indexes = mine
+    ? (state?.indexes || []).filter((index) => index.canManage !== false)
+    : state?.exploreIndexes || state?.indexes || [];
+  const volume = indexes.reduce(
+    (sum, item) => sum + (item.market.volume || 0),
+    0,
+  );
+  const basketValue = indexes.reduce(
+    (sum, item) => sum + (item.treasury.value || 0),
+    0,
+  );
   return (
     <Shell>
       <section className="home-intro">
         <div>
+          <div className="hero-protocol">
+            <span className="live-dot" />
+            Powered by Meteora DBC
+          </div>
           <h1>
-            A point of view.
+            Launch an index.
             <br />
-            <em>A basket of possibilities.</em>
+            <em>Build a business.</em>
           </h1>
           <p>
-            Choose the assets. Set the terms.
+            Choose your assets. Design your economics.
             <br />
-            Launch an index business on Meteora.
+            Turn trading activity into a working index treasury.
           </p>
           <Link href="/create" className="button primary">
             Create an index <Icon name="plus" size={18} />
@@ -42,17 +59,45 @@ export default function Home() {
             <span>BTC</span>
             <span>ETH</span>
             <span>SOL</span>
-            <i>One thesis.</i>
+            <i>Your basket. Your rules.</i>
           </div>
         </div>
       </section>
+      <div className="workspace-metrics" aria-label="Demo index activity">
+        <div>
+          <span>{mine ? 'Your indexes' : 'Indexes in this demo'}</span>
+          <strong>
+            {loading ? '—' : indexes.length}
+            <Icon name="grid" size={18} />
+          </strong>
+        </div>
+        <div>
+          <span>Recorded trading volume</span>
+          <strong>
+            {loading ? '—' : number(volume)}
+            <small>SOL</small>
+          </strong>
+        </div>
+        <div>
+          <span>Basket asset value</span>
+          <strong>
+            {loading ? '—' : number(basketValue)}
+            <small>SOL</small>
+          </strong>
+        </div>
+      </div>
       <section className="marketplace">
         <div className="section-heading">
           <div>
             <h2>
-              Your indexes <span className="count">{indexes.length}</span>
+              {mine ? 'My indexes' : 'Explore indexes'}{' '}
+              <span className="count">{indexes.length}</span>
             </h2>
-            <p>Each basket, its own launch and business model.</p>
+            <p>
+              {mine
+                ? 'Your launches and their business activity.'
+                : 'Discover the baskets launched in this devnet demo.'}
+            </p>
           </div>
           <button
             className="icon-button"
@@ -63,9 +108,24 @@ export default function Home() {
           </button>
         </div>
         {loading ? (
-          <div className="loading-state">
-            <span className="loading-ring" />
-            Loading your workspace…
+          <div
+            className="index-grid skeleton-grid"
+            role="status"
+            aria-label="Loading indexes"
+          >
+            {[0, 1, 2].map((item) => (
+              <div
+                className="index-card skeleton-card"
+                key={item}
+                aria-hidden="true"
+              >
+                <span />
+                <i />
+                <div />
+                <i />
+              </div>
+            ))}
+            <span className="sr-only">Loading indexes…</span>
           </div>
         ) : indexes.length ? (
           <div className="index-grid">
@@ -128,7 +188,11 @@ export default function Home() {
               <Icon name="basket" size={33} />
             </div>
             <div>
-              <h3>Your first index starts here.</h3>
+              <h3>
+                {mine
+                  ? 'Your first index starts here.'
+                  : 'Be the first to launch an index.'}
+              </h3>
               <p>
                 Build a basket around an idea. Decide how its trading fees
                 <br className="desktop-break" /> fund assets, reward holders and
@@ -141,7 +205,7 @@ export default function Home() {
           </div>
         )}
       </section>
-      <section className="product-steps" aria-label="How Index Launch works">
+      <section className="product-steps" aria-label="How the launchpad works">
         <div>
           <span className="step-number">01</span>
           <h3>Build your thesis</h3>

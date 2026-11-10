@@ -142,7 +142,7 @@ export function IndexProvider({ children }: { children: ReactNode }) {
   const run = useCallback(
     async (action: string, fields: Record<string, unknown> = {}) => {
       if (busyRef.current) return;
-      if (!['preview', 'add-asset'].includes(action) && !publicKey) {
+      if (!['preview', 'add-asset', 'open-index'].includes(action) && !publicKey) {
         setShowModal(true);
         setError('Connect your wallet to continue.');
         return;
@@ -167,7 +167,7 @@ export function IndexProvider({ children }: { children: ReactNode }) {
           wallet: publicKey?.toBase58(),
           requestId,
         });
-        const result = ['quote', 'preview', 'scenario', 'add-asset'].includes(
+        const result = ['quote', 'preview', 'scenario', 'add-asset', 'open-index'].includes(
           action,
         )
           ? response
